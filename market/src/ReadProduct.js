@@ -1,10 +1,21 @@
-import { useParams, useNavigate } from 'react-router-dom';
+import {useEffect, useState} from "react";
+import { useNavigate } from 'react-router-dom';
 import { read } from './TemporaryValues';
 
-export const ReadProduct = () => {
-    const { index } = useParams(); 
+export const ReadProduct = ({ index }) => {
     const navigate = useNavigate();
-    const product = read(index); 
+    const [product, setProduct] = useState(null);
+
+    useEffect(() => {
+        const data = read(index); 
+        if (data) {
+            setProduct(data);
+        }
+    }, [index]); 
+
+    if (!product) {
+        return <h2 className="text-center mt-5 text-danger">Product not found</h2>;
+    }
 
     return (
         <div className="container text-center mt-5">

@@ -1,22 +1,33 @@
-import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useState , useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { alteration, read } from "./TemporaryValues";
 
-export const UpdateProduct = () => {
-    const { index } = useParams();
+export const UpdateProduct = ({ index }) => {
     const navigate = useNavigate();
-    const [product, setProduct] = useState(read(index));
+    const [product, setProduct] = useState(null);
+
+    useEffect(() => {
+        const data = read(index);
+        if (data) {
+            setProduct(data);
+        }
+    }, [index]); 
 
     const handleChange = (e) => {
         setProduct({ ...product, [e.target.name]: e.target.value });
     };
-    
 
     const updateProduct = () => {
         alteration(product, index);
         alert("Product Updated Successfully!");
         navigate("/");
     };
+
+    if (!product) {
+        return <h2 className="text-center mt-5 text-danger">Product not found</h2>;
+    }
+
+    
 
     return (
         <div className="container mt-3">
